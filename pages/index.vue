@@ -24,35 +24,36 @@ const fetch_Quran = async () => {
       res = namaLa.indexOf(surah.value)
    }
    await navigateTo({
-    path: '/detail_surat', 
-    query: { nomerSurah: (res+1) }
-  });
+      path: '/detail_surat',
+      query: { nomerSurah: (res + 1) }
+   });
 }
 
-const detailSurah=async (nomerSurah: any)=> {
+const detailSurah = async (nomerSurah: any) => {
    console.log(nomerSurah)
    // this.$router.push({ name: 'detail_surat', params: { nomerSurah } });
    await navigateTo({
-    path: '/detail_surat', 
-    query: { nomerSurah: nomerSurah }
-  });
+      path: '/detail_surat',
+      query: { nomerSurah: nomerSurah }
+   });
 
 }
+
+console.log(quran)
 </script>
 
 <template>
-   <div class="flex align-middle justify-center justify-items-center">
+   <div class="flex justify-center align-middle justify-items-center">
       <div class="pt-4">
-         <div class="max-w-screen-2xl mx-auto">
-            <v-card class=" md:w-96 w-full">
-               <v-img class=" h-auto object-cover w-96"  aspect-ratio="4/3"
-                        src="/public/img/quran-islam.jpeg">
-                     </v-img>
+         <div class="mx-auto max-w-screen-2xl">
+            <v-card class="w-full md:w-96">
+               <v-img class="object-cover h-auto w-96" aspect-ratio="4/3" src="/public/img/quran-islam.jpeg">
+               </v-img>
             </v-card>
          </div>
       </div>
    </div>
-   <div class="pl-4 pt-5 flex align-middle">
+   <div class="flex pt-5 pl-4 align-middle">
       <label class="mr-6">Tampilkan : </label>
       <v-select v-model="surah" label="Surah" :items="namaLa" item-text="namaLatin" item-value="id" variant="underlined"
          class="max-w-32"> </v-select>
@@ -90,15 +91,15 @@ const detailSurah=async (nomerSurah: any)=> {
                      </div>
                   </template>
                   <template v-slot:prepend>
-                     <v-img class="bg-transparent text-black w-60 md:w-10"  aspect-ratio="1/1"
+                     <v-img class="text-black bg-transparent w-60 md:w-10" aspect-ratio="1/1"
                         src="/public/img/nomor1.png">
-                        <div class="d-flex align-center justify-center text-l md:text-sm " style="height: 100%;">
+                        <div class="justify-center d-flex align-center text-l md:text-sm " style="height: 100%;">
                            {{ ListSurat.nomor }}
                         </div>
                      </v-img>
                   </template>
                   <template v-slot:append>
-                     <v-col class="text-right font-serif text-h5">{{ ListSurat.nama }}</v-col>
+                     <v-col class="font-serif text-right text-h5">{{ ListSurat.nama }}</v-col>
                   </template>
                </v-card-item>
             </v-card>
