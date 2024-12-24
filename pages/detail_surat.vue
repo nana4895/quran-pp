@@ -2,26 +2,35 @@
 const route = useRoute();
 const nomerSurah = route.query.nomerSurah;
 
-const response = await $fetch('https://equran.id/api/v2/surat/' + nomerSurah);
-const ayats = response.data;
-console.log(ayats)
-// let listAyat=ayats.ayat.find((item)=>item.teksArab)
-// let listAyat = ayats.map((item) => {
-//     return {
-//         nomerAyat: item.nomerAyat,
-//         teksArab: item.teksArab
-//     };
-// });
+const fetchSurah = await $fetch('https://equran.id/api/v2/surat/' + nomerSurah);
+const ayats = fetchSurah.data;
+
+const fetchTafsir = await $fetch('https://equran.id/api/v2/tafsir/' + nomerSurah);
+var tafsir = fetchTafsir.data;
+
 var listAyat = [];
+var listTafsir=[];
 var listAudio = [];
 const file = ref('http://www.hochmuth.com/mp3/Boccherini_Concerto_478-1.mp3')
 
 for (let i = 0; i < ayats.ayat.length; i++) {
     listAyat.push(ayats.ayat[i]);
     listAudio.push(ayats.ayat[i].audio['02']);
-
+    for (var j = 0; j < tafsir.tafsir.length; j++) {
+      listTafsir.push(tafsir.tafsir[j].teks);
+    }
 }
 
+const dialog = reactive({
+  dialog: false,
+});
+var teksTafsir='';
+var title='';
+const tafsir_ayat=async (ayat:any)=>{
+  dialog.dialog = true;
+   title = 'Tafsir Ayat ' +(ayat+1);
+  teksTafsir = listTafsir[ayat]
+}
 </script>
 
 <style></style>
@@ -61,57 +70,31 @@ for (let i = 0; i < ayats.ayat.length; i++) {
                             {{ ayat.teksIndonesia }}
                             {{ ayat.audio[1] }}
                         </div>
-                        <audio controls>
-                            <source :src="ayat.audio['02']" type="audio/mpeg">
-                        </audio>
-                        <!-- <button @click="playAudio">
-                            play
-                        </button> -->
+<!--                        <audio controls>-->
+<!--                            <source :src="ayat.audio['02']" type="audio/mpeg">-->
+<!--                        </audio>-->
+                      <v-btn x-small dark variant="outlined" @click="tafsir_ayat(i)" class="pa-1 mt-4">Tafsir</v-btn>
                     </figcaption>
                 </div>
             </figure>
         </div>
 
     </v-container>
-    <!-- <v-container class="justify-center align-middle justify-items-center md:justify-center md:align-middle">
-        <div class="items-center w-62 md:items-center">
-            <v-img class="flex h-auto text-white bg-transparent filter invert w-72" aspect-ratio="16/9"
-                src="/public/img/pngwing.com (2).png">
-            </v-img>
-        </div>
-        <div class="flex items-center justify-center bg-red">
-            <v-row dense class="items-center content-center pt-8 md:align-middle md:justify-center">
-                <v-col v-for="(ayat, i) in listAyat" :key="i" cols="12"
-                    class="flex justify-center align-middle md:align-middle md:justify-center">
-                    <v-card class="hover:text-blue-500 w-96 " variant="outlined">
-                        <v-card-item>
-                            <template v-slot:subtitle>
-                                <div class="py-4">
-                                    <v-row no-gutters align="center">
-                                        <v-col>{{ ayat.teksIndonesia }}
-                                        </v-col>
-                                    </v-row>
-                                </div>
-                            </template>
-<template v-slot:prepend>
-                                <v-img class="text-white bg-transparent filter invert" :width="50" aspect-ratio="1/1"
-                                    src="/public/img/nomor.png">
-                                    <div class="justify-center d-flex align-center text-h6 text-blue"
-                                        style="height: 100%;">
-                                        {{ i + 1 }}
-                                    </div>
-                                </v-img>
-                            </template>
-<template v-slot:append>
-                                <v-col class="font-serif text-right text-h5">{{ ayat.teksArab }}</v-col>
-                            </template>
-</v-card-item>
-<v-card-subtitle class="space-y-4 md:text-left md:text-lg lg:text-xl">
-    {{ ayat.teksIndonesia }}
-</v-card-subtitle>
-</v-card>
-</v-col>
-</v-row>
-</div>
-</v-container> -->
+
+  <v-dialog v-model="dialog.dialog" max-width="800" persistent>
+    <v-card>
+      <v-card :title="title" class="pa-4">
+        <template v-slot:text>
+          <p class="text-lg">{{teksTafsir}}</p>
+        </template>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn @click="dialog.dialog = false">Tidak</v-btn>
+          <v-btn >Ya</v-btn>
+        </v-card-actions>
+      </v-card>
+
+
+    </v-card>
+  </v-dialog>
 </template>
